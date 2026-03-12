@@ -377,7 +377,7 @@ const ALL_QUESTIONS = [
     category:"🗣️ Speaking",
     q:"How would you say the number 3,500 in an IELTS Speaking response?",
     options:["Three thousand and five hundred","Three five zero zero","Three and a half thousand","Three hundred and fifty"],
-    answer:2,
+    answer:[0,2],
     explanation:"'Three and a half thousand' is natural, fluent English and exactly the kind of phrasing that impresses examiners. 'Three thousand five hundred' is also correct."
   },
   {
@@ -509,11 +509,12 @@ function selectAnswer(idx) {
   const q = questions[current];
   const btns = document.querySelectorAll('.option-btn');
   const fb = document.getElementById('feedback-box');
-  const correct = idx === q.answer;
+  const correctAnswers = Array.isArray(q.answer) ? q.answer : [q.answer];
+  const correct = correctAnswers.includes(idx);
 
   btns.forEach((b, i) => {
     b.disabled = true;
-    if (i === q.answer) b.classList.add(correct ? 'correct' : 'reveal');
+    if (correctAnswers.includes(i)) b.classList.add(correct ? 'correct' : 'reveal');
     else if (i === idx && !correct) b.classList.add('wrong');
   });
 
@@ -528,7 +529,7 @@ function selectAnswer(idx) {
   const nextBtn = document.getElementById('next-btn');
   nextBtn.disabled = false;
   nextBtn.textContent = isLast ? 'See Results 🏁' : 'Next →';
-  document.getElementById('answered-hint').textContent = correct ? '🎉 Well done!' : `The correct answer was: ${q.options[q.answer]}`;
+  document.getElementById('answered-hint').textContent = correct ? '🎉 Well done!' : `Correct answer(s): ${correctAnswers.map(i => q.options[i]).join(' / ')}`;
 }
 
 function nextQuestion() {
